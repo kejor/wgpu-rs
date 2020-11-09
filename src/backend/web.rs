@@ -160,6 +160,7 @@ impl crate::RenderInner<Context> for RenderPass {
     fn set_index_buffer(
         &mut self,
         buffer: &Sendable<web_sys::GpuBuffer>,
+        index_format: wgt::IndexFormat,
         offset: wgt::BufferAddress,
         size: Option<wgt::BufferSize>,
     ) {

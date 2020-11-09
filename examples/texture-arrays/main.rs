@@ -70,6 +70,7 @@ struct Example {
     pipeline: wgpu::RenderPipeline,
     bind_group: wgpu::BindGroup,
     vertex_buffer: wgpu::Buffer,
+    index_format: wgpu::IndexFormat,
     index_buffer: wgpu::Buffer,
     uniform_workaround: bool,
 }
@@ -124,6 +125,7 @@ impl framework::Example for Example {
         });
 
         let index_data = create_indices();
+        let index_format = wgpu::IndexFormat::Uint16;
         let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Index Buffer"),
             contents: bytemuck::cast_slice(&index_data),
@@ -284,6 +286,7 @@ impl framework::Example for Example {
 
         Self {
             vertex_buffer,
+            index_format,
             index_buffer,
             bind_group,
             pipeline,
@@ -327,7 +330,7 @@ impl framework::Example for Example {
         rpass.set_pipeline(&self.pipeline);
         rpass.set_bind_group(0, &self.bind_group, &[]);
         rpass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
-        rpass.set_index_buffer(self.index_buffer.slice(..));
+        rpass.set_index_buffer(self.index_buffer.slice(..), self.index_format);
         if self.uniform_workaround {
             rpass.set_push_constants(wgpu::ShaderStage::FRAGMENT, 0, bytemuck::cast_slice(&[0]));
             rpass.draw_indexed(0..6, 0, 0..1);
