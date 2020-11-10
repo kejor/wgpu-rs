@@ -225,7 +225,7 @@ mod pass_impl {
             offset: wgt::BufferAddress,
             size: Option<wgt::BufferSize>,
         ) {
-            wgpu_render_pass_set_index_buffer(self, buffer.id, offset, size)
+            wgpu_render_pass_set_index_buffer(self, buffer.id, index_format, offset, size)
         }
         fn set_vertex_buffer(
             &mut self,
@@ -419,7 +419,7 @@ mod pass_impl {
             offset: wgt::BufferAddress,
             size: Option<wgt::BufferSize>,
         ) {
-            wgpu_render_bundle_set_index_buffer(self, buffer.id, offset, size)
+            wgpu_render_bundle_set_index_buffer(self, buffer.id, index_format, offset, size)
         }
         fn set_vertex_buffer(
             &mut self,
@@ -910,7 +910,8 @@ impl crate::Context for Context {
             })
             .collect();
         let vertex_state = pipe::VertexStateDescriptor {
-            index_format: desc.vertex_state.index_format,
+            // TODO: Make VertexStateDescriptor's index_format an `Option`
+            index_format: Some(desc.vertex_state.index_format),
             vertex_buffers: Borrowed(&vertex_buffers),
         };
 
